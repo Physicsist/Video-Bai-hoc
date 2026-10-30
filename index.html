@@ -1,0 +1,1790 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VIDEO BÀI HỌC - Tự học Vật Lí 10 (Bài 1 - Bài 19)</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- MathJax hiển thị công thức Vật lí rõ đẹp -->
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']]
+      },
+      svg: { fontCache: 'global' }
+    };
+  </script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f4f7fb;
+      color: #0f172a;
+    }
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #f1f5f9; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+    .lesson-btn {
+      transition: all 0.18s ease;
+    }
+    .lesson-btn:hover {
+      transform: translateY(-1px);
+    }
+    @keyframes popIn {
+      0% { transform: scale(0.97); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .animate-pop {
+      animation: popIn 0.22s ease-out forwards;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+  <!-- ================= HEADER: THANH CÔNG CỤ ĐỊNH DANH & BÁO KẾT QUẢ ================= -->
+  <header class="sticky top-0 z-40 bg-white/95 backdrop-blur border-b border-slate-200 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
+      
+      <!-- Logo & Tên Trang Web: VIDEO BÀI HỌC -->
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-700 flex items-center justify-center text-white font-extrabold text-xl shadow-md shadow-blue-500/20">
+            🎬
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="text-[11px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200">
+                Vật Lí 10 • GDPT 2018
+              </span>
+              <span id="completedCountChip" class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+                Đã hoàn thành: 0/19 bài
+              </span>
+            </div>
+            <h1 class="text-lg sm:text-xl font-extrabold text-slate-900 tracking-tight mt-0.5">
+              VIDEO BÀI HỌC
+            </h1>
+          </div>
+        </div>
+
+        <!-- Nút mở danh sách bài học trên điện thoại -->
+        <button onclick="toggleMobileSidebar()" class="lg:hidden px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs flex items-center gap-1.5">
+          📚 Chọn Bài (1-19)
+        </button>
+      </div>
+
+      <!-- Cụm chức năng bắt buộc: Ô nhập Họ tên, Lớp + Âm thanh + Nút Báo kết quả -->
+      <div class="flex flex-wrap items-center gap-2 sm:gap-2.5">
+        
+        <!-- 1. Ô NHẬP HỌ TÊN & LỚP (BẮT BUỘC) -->
+        <div id="studentIdentityBox" class="flex items-center gap-1.5 bg-slate-50 border-2 border-blue-200 rounded-xl p-1.5">
+          <span class="text-xs font-bold text-blue-700 px-1.5 hidden sm:inline">👤 Học sinh:</span>
+          <input
+            id="studentNameInput"
+            type="text"
+            placeholder="Nhập Họ và tên..."
+            oninput="saveStudentIdentity()"
+            class="w-36 sm:w-44 px-2.5 py-1.5 text-sm font-semibold bg-white border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          <input
+            id="studentClassInput"
+            type="text"
+            placeholder="Lớp (VD: 10A1)"
+            oninput="saveStudentIdentity()"
+            class="w-24 sm:w-28 px-2.5 py-1.5 text-sm font-semibold bg-white border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+
+        <!-- 2. NÚT ÂM THANH TƯƠNG TÁC -->
+        <button
+          id="soundToggleBtn"
+          onclick="toggleSound()"
+          class="px-3.5 py-2.5 rounded-xl font-bold text-xs sm:text-sm flex items-center gap-1.5 border transition shadow-sm bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100"
+          title="Bật/Tắt âm thanh xác nhận"
+        >
+          <span id="soundIcon">🔊</span>
+          <span id="soundText">Âm thanh: BẬT</span>
+        </button>
+
+        <!-- 3. NÚT BÁO HỌ TÊN & KẾT QUẢ THỰC HIỆN -->
+        <button
+          onclick="openReportModal()"
+          class="px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm flex items-center gap-1.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-md shadow-blue-500/20 transition"
+        >
+          <span>📋</span>
+          <span>Báo Họ Tên & Kết Quả</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Thanh nhắc nhở bắt buộc nhập Họ tên & Lớp -->
+    <div id="identityWarningBanner" class="bg-amber-50 border-t border-amber-200 px-4 py-1.5 text-center text-xs sm:text-sm font-semibold text-amber-800 hidden">
+      ⚠️ Bắt buộc: Em hãy nhập chính xác <b>Họ và tên</b> và <b>Lớp</b> ở thanh trên cùng trước khi xem Video bài học, bình luận và hoàn thành bài!
+    </div>
+  </header>
+
+  <!-- ================= BỐ CỤC CHÍNH (STUDIO HỌC TẬP HIỆN ĐẠI) ================= -->
+  <div class="max-w-7xl w-full mx-auto flex-1 grid grid-cols-1 lg:grid-cols-12 gap-6 px-4 py-5">
+
+    <!-- CỘT TRÁI: DANH SÁCH 19 NÚT BẤM CHỌN BÀI HỌC (BÀI 1 -> BÀI 19) -->
+    <aside id="sidebarContainer" class="lg:col-span-4 xl:col-span-3 hidden lg:block">
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden sticky top-24">
+        
+        <div class="p-4 bg-gradient-to-r from-slate-900 to-slate-800 text-white">
+          <div class="flex items-center justify-between">
+            <h2 class="font-extrabold text-sm uppercase tracking-wider flex items-center gap-2">
+              🎥 Danh mục Video Tổng Quan
+            </h2>
+            <span class="text-[11px] bg-blue-500/20 text-blue-200 px-2 py-0.5 rounded-full border border-blue-400/30 font-bold">
+              19 Bài học
+            </span>
+          </div>
+          <p class="text-xs text-slate-300 mt-1">
+            Bấm chọn từng bài học (Bài 1 → Bài 19) để xem video chuẩn bị bài mới trước khi lên lớp.
+          </p>
+        </div>
+
+        <!-- Ô tìm kiếm nhanh bài học -->
+        <div class="p-2.5 bg-slate-50 border-b border-slate-200">
+          <input
+            id="searchLessonInput"
+            type="text"
+            oninput="renderLessonButtons()"
+            placeholder="🔍 Tìm nhanh bài học (VD: Bài 4, Động lượng...)"
+            class="w-full px-3 py-2 text-xs sm:text-sm bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+
+        <!-- Danh sách nút bấm Bài 1 -> Bài 19 -->
+        <div id="lessonButtonsContainer" class="max-h-[68vh] overflow-y-auto p-3 space-y-2">
+          <!-- Render tự động bằng JS -->
+        </div>
+      </div>
+    </aside>
+
+    <!-- CỘT PHẢI: NỘI DUNG CHI TIẾT VIDEO BÀI HỌC, CÂU HỎI TƯƠNG TÁC, PHẢN TƯ & BÌNH LUẬN FB -->
+    <main class="lg:col-span-8 xl:col-span-9 space-y-6">
+
+      <!-- Thanh chọn nhanh nút bấm Bài 1 -> 19 dạng lưới ngang thân thiện -->
+      <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+          <span class="text-xs font-extrabold uppercase tracking-wider text-slate-500">
+            ⚡ Chọn nhanh Video Bài Học (Bài 1 → Bài 19):
+          </span>
+          <span id="studentStatusText" class="text-xs font-bold text-slate-600">
+            Chưa nhập Họ tên & Lớp
+          </span>
+        </div>
+        <div id="quickButtonsGrid" class="grid grid-cols-4 sm:grid-cols-7 md:grid-cols-10 gap-1.5">
+          <!-- Render 19 nút bấm số thứ tự bài học -->
+        </div>
+      </div>
+
+      <!-- ================= THẺ CHÍNH: TRÌNH XEM VIDEO TỔNG QUAN & TÓM TẮT 3 PHẦN ================= -->
+      <section class="bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 shadow-sm space-y-5">
+        
+        <!-- Tiêu đề bài học & Trạng thái hoàn thành -->
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100 pb-4">
+          <div>
+            <div class="flex flex-wrap items-center gap-2">
+              <span id="currentLessonChapterBadge" class="text-xs font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-full bg-blue-50 text-blue-700 border border-blue-200">
+                Chương I • Mở đầu
+              </span>
+              <span id="currentLessonCompletedBadge" class="text-xs font-bold px-2.5 py-1 rounded-full bg-slate-100 text-slate-600">
+                ⏳ Chưa hoàn thành bài này
+              </span>
+            </div>
+            <h2 id="currentLessonTitle" class="text-xl sm:text-2xl font-extrabold text-slate-900 mt-2">
+              Bài 1: Làm quen với Vật lí
+            </h2>
+            <p id="currentLessonSubtitle" class="text-sm text-slate-600 mt-1">
+              Video tổng quan 3–5 phút giúp em nắm chắc hiện tượng thực tế và công thức trọng tâm trước khi lên lớp.
+            </p>
+          </div>
+
+          <!-- Nút chuyển bài Trước / Tiếp theo -->
+          <div class="flex items-center gap-2 shrink-0">
+            <button
+              onclick="navigateLesson(-1)"
+              id="prevLessonBtn"
+              class="px-3.5 py-2 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700 font-bold text-xs sm:text-sm transition"
+            >
+              ← Bài trước
+            </button>
+            <button
+              onclick="navigateLesson(1)"
+              id="nextLessonBtn"
+              class="px-3.5 py-2 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700 font-bold text-xs sm:text-sm transition"
+            >
+              Bài tiếp →
+            </button>
+          </div>
+        </div>
+
+        <!-- KHUNG MỞ VIDEO TỔNG QUAN (NOTEBOOKLM LINK CHÍNH XÁC TỪ FILE) -->
+        <div class="rounded-2xl bg-gradient-to-br from-slate-900 via-indigo-950 to-blue-950 text-white p-6 sm:p-8 shadow-lg relative overflow-hidden">
+          <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div class="space-y-2.5 max-w-2xl">
+              <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 text-blue-200 text-xs font-bold backdrop-blur-xs">
+                <span>🎧🎬 NotebookLM Video & Audio Tổng Quan</span>
+                <span>•</span>
+                <span>Thời lượng: 3 – 5 phút</span>
+              </div>
+              <h3 id="videoHeroHeading" class="text-lg sm:text-2xl font-extrabold leading-snug">
+                Khám phá Video Tổng quan Bài 1 trên Google NotebookLM
+              </h3>
+              <p class="text-xs sm:text-sm text-slate-200 leading-relaxed">
+                Bấm nút <b>"▶️ Mở Xem Video Bài Học Ngay"</b> bên dưới để mở trực tiếp tài liệu & video/audio tổng quan trên NotebookLM. Sau khi xem xong, em hãy quay lại trang này để làm <b>Câu hỏi thử thách</b>, viết <b>Phản tư</b> và <b>Bình luận</b> nhé!
+              </p>
+              <div class="pt-1 text-xs text-blue-200 font-mono break-all" id="videoDirectUrlDisplay">
+                Link gốc: https://notebooklm.link.google/C9pOuchC9JFs
+              </div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row md:flex-col gap-3 shrink-0">
+              <button
+                onclick="openCurrentVideoLink()"
+                class="px-6 py-4 rounded-2xl bg-gradient-to-r from-amber-400 to-orange-500 hover:from-amber-500 hover:to-orange-600 text-slate-950 font-extrabold text-sm sm:text-base shadow-xl shadow-orange-500/25 flex items-center justify-center gap-2.5 transition transform hover:scale-[1.02]"
+              >
+                <span class="text-xl">▶️</span>
+                <span>Mở Xem Video Bài Học Ngay</span>
+              </button>
+              <button
+                onclick="markVideoWatched()"
+                id="btnMarkWatched"
+                class="px-4 py-2.5 rounded-xl bg-white/15 hover:bg-white/25 text-white font-bold text-xs sm:text-sm border border-white/20 transition"
+              >
+                ✓ Đánh dấu em đã mở xem Video
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- TIẾN TRÌNH 3 PHẦN CỦA VIDEO BÀI GIẢNG (THEO ĐÚNG CẤU TRÚC TÀI LIỆU NGUỒN) -->
+        <div class="space-y-3">
+          <div class="flex items-center justify-between">
+            <h3 class="font-extrabold text-base sm:text-lg text-slate-900 flex items-center gap-2">
+              <span>🧭</span>
+              <span>Tiến trình tự học cùng Video (3 Phần cốt lõi)</span>
+            </h3>
+            <button
+              onclick="toggleStoryboardTable()"
+              class="text-xs font-bold text-blue-600 hover:text-blue-800 underline"
+            >
+              🎬 Xem bảng Kịch bản phân cảnh 4 cột
+            </button>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+            <!-- Phần 1: Khởi động (30s) -->
+            <div class="p-4 rounded-2xl bg-amber-50/70 border border-amber-200 space-y-1.5">
+              <div class="text-xs font-extrabold uppercase text-amber-800 flex items-center justify-between">
+                <span>🚀 Phần 1: Khởi động</span>
+                <span class="px-2 py-0.5 rounded bg-amber-200/70 text-amber-900">30 giây</span>
+              </div>
+              <p id="part1HookText" class="text-sm font-medium text-slate-800 leading-relaxed">
+                <!-- Render JS -->
+              </p>
+            </div>
+
+            <!-- Phần 2: Khám phá kiến thức trọng tâm (2.5 phút) -->
+            <div class="p-4 rounded-2xl bg-blue-50/70 border border-blue-200 space-y-1.5">
+              <div class="text-xs font-extrabold uppercase text-blue-800 flex items-center justify-between">
+                <span>💡 Phần 2: Trọng tâm</span>
+                <span class="px-2 py-0.5 rounded bg-blue-200/70 text-blue-900">2,5 phút</span>
+              </div>
+              <p id="part2CoreText" class="text-sm font-medium text-slate-800 leading-relaxed">
+                <!-- Render JS -->
+              </p>
+            </div>
+
+            <!-- Phần 3: Thử thách nhanh / Gợi mở (30s) -->
+            <div class="p-4 rounded-2xl bg-purple-50/70 border border-purple-200 space-y-1.5">
+              <div class="text-xs font-extrabold uppercase text-purple-800 flex items-center justify-between">
+                <span>🔥 Phần 3: Thử thách mở</span>
+                <span class="px-2 py-0.5 rounded bg-purple-200/70 text-purple-900">30 giây</span>
+              </div>
+              <p id="part3ChallengeText" class="text-sm font-medium text-slate-800 leading-relaxed">
+                <!-- Render JS -->
+              </p>
+            </div>
+          </div>
+
+          <!-- BẢNG KỊCH BẢN PHÂN CẢNH 4 CỘT (MẶC ĐỊNH ẨN GỌN, BẤM ĐỂ MỞ) -->
+          <div id="storyboardTableContainer" class="hidden pt-2 animate-pop">
+            <div class="rounded-2xl border border-slate-200 overflow-hidden bg-white">
+              <div class="bg-slate-100 px-4 py-2.5 border-b border-slate-200 flex items-center justify-between">
+                <span class="font-extrabold text-xs sm:text-sm text-slate-800">
+                  📋 Bảng Kịch Bản Phân Cảnh Video Bài Giảng (4 Cột Chuẩn GDPT 2018)
+                </span>
+                <button onclick="toggleStoryboardTable()" class="text-xs font-bold text-slate-500 hover:text-slate-800">Đóng ✕</button>
+              </div>
+              <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse text-xs sm:text-sm">
+                  <thead>
+                    <tr class="bg-slate-50 text-slate-700 border-b border-slate-200">
+                      <th class="p-3 font-extrabold w-1/6 border-r border-slate-200">1. Phân cảnh & Thời lượng</th>
+                      <th class="p-3 font-extrabold w-2/6 border-r border-slate-200">2. Lời dẫn / Thuyết minh (Voiceover)</th>
+                      <th class="p-3 font-extrabold w-2/6 border-r border-slate-200">3. Hình ảnh / Video thực tế hiển thị</th>
+                      <th class="p-3 font-extrabold w-1/6">4. Chữ / Đồ họa (Key Formula)</th>
+                    </tr>
+                  </thead>
+                  <tbody id="storyboardTableBody" class="divide-y divide-slate-200 text-slate-700">
+                    <!-- Render JS -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= CÂU HỎI TƯƠNG TÁC NHANH SAU KHI XEM VIDEO ================= -->
+      <section class="bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 shadow-sm space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <div>
+            <span class="text-xs font-extrabold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200">
+              Kiểm tra nhanh mức độ hiểu Video
+            </span>
+            <h3 class="text-base sm:text-lg font-extrabold text-slate-900 mt-1">
+              🎯 Câu hỏi tương tác sau khi xem Video
+            </h3>
+          </div>
+          <span id="quickQuizStatusBadge" class="text-xs font-bold px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700">
+            Chưa trả lời
+          </span>
+        </div>
+
+        <!-- Nội dung câu hỏi chữ rõ ràng -->
+        <div id="quickQuestionText" class="text-base sm:text-lg font-semibold text-slate-900 leading-relaxed bg-slate-50 p-4 rounded-xl border border-slate-200">
+          <!-- Render JS -->
+        </div>
+
+        <!-- Các lựa chọn đáp án -->
+        <div id="quickQuestionOptions" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <!-- Render JS -->
+        </div>
+
+        <!-- Giải thích ngay khi chọn -->
+        <div id="quickQuestionExplanation" class="hidden p-4 rounded-xl border text-sm">
+          <!-- Render JS -->
+        </div>
+
+        <!-- Bình luận kiểu Facebook riêng cho Câu hỏi nhanh -->
+        <div class="pt-3 border-t border-slate-100">
+          <button
+            onclick="toggleQuestionComments()"
+            class="text-xs sm:text-sm font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1.5"
+          >
+            <span>💬 Bình luận & Thảo luận về câu hỏi này</span>
+            <span id="questionCommentCountText">(0)</span>
+          </button>
+
+          <div id="questionCommentsBox" class="hidden mt-3 bg-slate-50 rounded-xl p-3.5 border border-slate-200 space-y-3">
+            <div id="questionCommentsList" class="space-y-2.5"></div>
+            <div class="flex gap-2">
+              <input
+                id="questionCommentInput"
+                type="text"
+                placeholder="Chia sẻ cách suy luận của em cho câu hỏi này..."
+                onkeydown="if(event.key==='Enter') postCommentForCurrentQuestion()"
+                class="flex-1 px-3 py-2 rounded-xl border border-slate-300 text-xs sm:text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+              <button
+                onclick="postCommentForCurrentQuestion()"
+                class="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shrink-0"
+              >
+                Gửi
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= HỘP PHẢN TƯ CUỐI BÀI (BẮT BUỘC TRƯỚC KHI HOÀN THÀNH) ================= -->
+      <section class="bg-white rounded-2xl border-2 border-indigo-200 p-5 sm:p-6 shadow-sm space-y-4">
+        <div class="flex items-start gap-3">
+          <div class="w-11 h-11 rounded-2xl bg-indigo-100 text-indigo-700 flex items-center justify-center text-xl font-bold shrink-0">
+            🤔
+          </div>
+          <div class="flex-1">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <span class="text-xs font-extrabold uppercase tracking-wider text-indigo-700 bg-indigo-50 px-2.5 py-0.5 rounded-full border border-indigo-200">
+                Bước Phản Tư Bắt Buộc Cuối Video
+              </span>
+              <span id="reflectionStatusBadge" class="text-xs font-bold text-rose-600">
+                * Bắt buộc ghi trước khi bấm Hoàn thành
+              </span>
+            </div>
+            <h3 class="text-base sm:text-lg font-extrabold text-slate-900 mt-1">
+              Câu hỏi phản tư sau khi xem Video:
+            </h3>
+            <p class="text-sm sm:text-base font-semibold text-indigo-950 mt-0.5">
+              "Hãy lọc ra điều em thấy <b>khó hiểu nhất</b> sau khi XEM xong video này là gì?"
+            </p>
+          </div>
+        </div>
+
+        <textarea
+          id="reflectionTextarea"
+          rows="3"
+          oninput="handleReflectionInput()"
+          placeholder="Nhập rõ điều em còn thắc mắc hoặc chỗ em thấy dễ nhầm lẫn nhất sau khi xem xong video bài học này (tối thiểu 10 ký tự)..."
+          class="w-full p-3.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm sm:text-base bg-slate-50/70"
+        ></textarea>
+
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-1">
+          <p class="text-xs text-slate-500">
+            💡 Câu hỏi phản tư của em sẽ được gửi kèm trong phiếu báo cáo kết quả và có thể chia sẻ xuống khu thảo luận lớp học.
+          </p>
+          <div class="flex flex-wrap items-center gap-2">
+            <button
+              onclick="shareReflectionToComments()"
+              class="px-4 py-2.5 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold text-xs sm:text-sm border border-indigo-200 transition"
+            >
+              💬 Đăng thắc mắc này lên Thảo luận lớp
+            </button>
+            <button
+              onclick="completeCurrentLesson()"
+              id="btnCompleteLesson"
+              class="px-5 py-3 rounded-xl font-extrabold text-xs sm:text-sm bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white shadow-md shadow-emerald-500/20 transition flex items-center gap-2"
+            >
+              <span>✅</span>
+              <span>Hoàn Thành Video Bài Này & Báo Kết Quả</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= BÌNH LUẬN & THẢO LUẬN KIỂU FACEBOOK CHO BÀI HỌC ================= -->
+      <section class="bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 shadow-sm space-y-4">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+          <div class="flex items-center gap-2.5">
+            <span class="text-2xl">💬</span>
+            <div>
+              <h3 class="font-extrabold text-base sm:text-lg text-slate-900">
+                Thảo luận Bài học cùng Lớp (Kiểu Facebook)
+              </h3>
+              <p class="text-xs text-slate-500">
+                Các em có thể bình luận nhận xét về video, đặt câu hỏi hoặc giải đáp thắc mắc cho bạn bè.
+              </p>
+            </div>
+          </div>
+          <span id="lessonCommentTotalBadge" class="text-xs font-bold px-3 py-1 rounded-full bg-blue-50 text-blue-700 border border-blue-200">
+            0 bình luận
+          </span>
+        </div>
+
+        <!-- Khung nhập bình luận mới -->
+        <div class="flex gap-3">
+          <div id="commentAvatarBox" class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-600 to-indigo-600 text-white font-extrabold flex items-center justify-center shrink-0 text-sm">
+            HS
+          </div>
+          <div class="flex-1 space-y-2">
+            <textarea
+              id="lessonCommentInput"
+              rows="2"
+              placeholder="Viết bình luận của em về video bài học này (ví dụ: Điểm thú vị nhất, câu trả lời cho thử thách cuối video...)"
+              class="w-full p-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm bg-slate-50"
+            ></textarea>
+            <div class="flex items-center justify-between">
+              <span class="text-[11px] text-slate-500">
+                Thả cảm xúc 👍 Đồng cảm hoặc 💡 Góc nhìn hay cho các bình luận hay nhé!
+              </span>
+              <button
+                onclick="postCommentForCurrentLesson()"
+                class="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs sm:text-sm shadow-xs transition"
+              >
+                Đăng bình luận
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Danh sách bình luận bài học -->
+        <div id="lessonCommentsContainer" class="space-y-3 pt-2">
+          <!-- Render JS -->
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ================= MODAL BÁO HỌ TÊN & KẾT QUẢ THỰC HIỆN ================= -->
+  <div id="reportModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 animate-pop">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+        <h3 class="font-extrabold text-lg text-slate-900 flex items-center gap-2">
+          📋 Báo Họ Tên & Kết Quả Tự Học Video
+        </h3>
+        <button onclick="closeReportModal()" class="text-slate-400 hover:text-slate-600 text-xl font-bold">&times;</button>
+      </div>
+
+      <div id="reportContentBox" class="mt-4 bg-slate-50 border border-slate-200 rounded-xl p-4 text-xs sm:text-sm space-y-2 font-medium text-slate-800 whitespace-pre-line max-h-80 overflow-y-auto">
+        <!-- Nội dung tổng hợp -->
+      </div>
+
+      <div id="reportWarningUnfinished" class="mt-3 p-3 rounded-xl bg-amber-50 border border-amber-200 text-xs font-semibold text-amber-800 hidden">
+        ⚠️ Chú ý: Ở bài đang chọn, em chưa ghi câu hỏi <b>Phản tư cuối video</b>. Hãy ghi lại điều em thấy khó hiểu nhất rồi bấm nút <b>Hoàn thành</b> nhé!
+      </div>
+
+      <div class="mt-5 flex flex-wrap items-center justify-end gap-2">
+        <button onclick="closeReportModal()" class="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs sm:text-sm">
+          Đóng
+        </button>
+        <button
+          onclick="copyReportText()"
+          id="copyReportBtn"
+          class="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs sm:text-sm flex items-center gap-1.5 shadow-sm"
+        >
+          <span>📋</span>
+          <span>Sao chép Báo cáo nộp Zalo / Giáo viên</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= JAVASCRIPT XỬ LÝ TOÀN BỘ LOGIC ================= -->
+  <script>
+    /*************************************************************************
+     * 1. DỮ LIỆU 19 BÀI HỌC LẤY CHÍNH XÁC TỪ FILE "VIDEO TỔNG QUAN"
+     *************************************************************************/
+    const VIDEO_LESSONS = [
+      {
+        id: 1,
+        code: 'bai-1',
+        chapter: 'Chương I • Mở đầu',
+        title: 'Bài 1: Làm quen với Vật lí',
+        url: 'https://notebooklm.link.google/C9pOuchC9JFs',
+        hook30s: 'Tại sao chiếc điện thoại trên tay em vừa chụp ảnh nét căng, vừa định vị GPS chuẩn từng mét? Tất cả đều bắt nguồn từ các khám phá Vật lí!',
+        core2m30s: 'Đối tượng nghiên cứu của Vật lí (các dạng vận động của vật chất và năng lượng) và phương pháp thực nghiệm: Quan sát → Đặt giả thuyết → Thí nghiệm kiểm chứng.',
+        challenge30s: 'Theo em, nếu không có các thành tựu về điện từ học thì cuộc sống một ngày của học sinh lớp 10 sẽ thay đổi hài hước thế nào?',
+        question: 'Phương pháp nghiên cứu cốt lõi giúp Галилей (Galilei) bác bỏ quan điểm "vật nặng luôn rơi nhanh hơn vật nhẹ" là gì?',
+        options: [
+          'Phương pháp thực nghiệm (làm thí nghiệm kiểm chứng giả thuyết)',
+          'Chỉ suy luận thuần túy trong phòng kín không cần thí nghiệm',
+          'Lấy ý kiến số đông người dân thời bấy giờ',
+          'Đoán ngẫu nhiên không cần đo đạc'
+        ],
+        correctOption: 'Phương pháp thực nghiệm (làm thí nghiệm kiểm chứng giả thuyết)',
+        explanation: 'Galilei đã tiến hành thí nghiệm thả các quả cầu tại tháp nghiêng Pisa để kiểm chứng, đặt nền móng cho phương pháp thực nghiệm Vật lí.'
+      },
+      {
+        id: 2,
+        code: 'bai-2',
+        chapter: 'Chương I • Mở đầu',
+        title: 'Bài 2: Các quy tắc an toàn trong phòng thực hành Vật lí',
+        url: 'https://notebooklm.link.google/hXKrSGmBZzIu',
+        hook30s: 'Cắm nhầm thang đo ampe kế vào ổ điện hay đùa nghịch với tia laser trong phòng thí nghiệm có biến em thành "siêu anh hùng" như trên phim không? Không đâu, chỉ có khói bốc lên thôi!',
+        core2m30s: 'Nhận biết các biển báo an toàn (điện áp cao, chất dễ cháy, tia laser, dụng cụ sắc nhọn) và quy tắc vàng khi sử dụng thiết bị điện, quang học, nhiệt học.',
+        challenge30s: 'Khi thấy một dây dẫn điện trong bộ thí nghiệm bị hở lớp vỏ cách điện, hành động đầu tiên của em là gì?',
+        question: 'Khi làm thí nghiệm với nguồn điện trong phòng thực hành Vật lí, thao tác nào sau đây là AN TOÀN và ĐÚNG quy tắc nhất?',
+        options: [
+          'Ngắt nguồn điện trước khi lắp ráp hoặc thay đổi sơ đồ mạch điện',
+          'Dùng tay ướt cắm trực tiếp phích điện để tiết kiệm thời gian',
+          'Tự ý nối tắt hai cực của nguồn điện để xem tia lửa điện',
+          'Bật nguồn điện tối đa ngay khi chưa được giáo viên kiểm tra mạch'
+        ],
+        correctOption: 'Ngắt nguồn điện trước khi lắp ráp hoặc thay đổi sơ đồ mạch điện',
+        explanation: 'Luôn ngắt nguồn điện khi lắp mạch và chỉ đóng điện sau khi giáo viên hoặc nhóm đã kiểm tra an toàn.'
+      },
+      {
+        id: 3,
+        code: 'bai-3',
+        chapter: 'Chương I • Mở đầu',
+        title: 'Bài 3: Thực hành tính sai số trong phép đo. Ghi kết quả đo',
+        url: 'https://notebooklm.link.google/zAv6FCGThoWq',
+        hook30s: 'Ba bạn cùng đo chiều dài một chiếc bàn học nhưng ra 3 con số khác nhau! Vậy ai đúng, ai sai, hay cả 3 đều có sai số?',
+        core2m30s: 'Phân biệt sai số hệ thống và sai số ngẫu nhiên. Cách tính giá trị trung bình $\\overline{A}$, sai số tuyệt đối $\\Delta A = \\overline{\\Delta A} + \\Delta A_{\\text{dc}}$ và sai số tỉ đối $\\delta A = \\dfrac{\\Delta A}{\\overline{A}}\\cdot 100\\%$.',
+        challenge30s: 'Làm thế nào để giảm thiểu sai số ngẫu nhiên khi bấm đồng hồ đo thời gian rơi của một quả bóng?',
+        question: 'Kết quả của một phép đo đại lượng $A$ có giá trị trung bình $\\overline{A}$ và sai số tuyệt đối $\\Delta A$ được biểu diễn chuẩn theo công thức nào?',
+        options: [
+          '$A = \\overline{A} \\pm \\Delta A$',
+          '$A = \\overline{A} \\cdot \\Delta A$',
+          '$A = \\dfrac{\\overline{A}}{\\Delta A}$',
+          '$A = \\Delta A - \\overline{A}$'
+        ],
+        correctOption: '$A = \\overline{A} \\pm \\Delta A$',
+        explanation: 'Kết quả đo đại lượng $A$ luôn được ghi dưới dạng $A = \\overline{A} \\pm \\Delta A$ với $\\Delta A$ và $\\overline{A}$ có cùng bậc chữ số thập phân.'
+      },
+      {
+        id: 4,
+        code: 'bai-4',
+        chapter: 'Chương II • Động học',
+        title: 'Bài 4: Độ dịch chuyển và quãng đường đi được',
+        url: 'https://notebooklm.link.google/BtwNb3esakr5',
+        hook30s: 'Sáng nay em đạp xe từ nhà đến trường hết 2 km, chiều đạp về đúng 2 km rồi ngồi nguyên tại nhà. Đồng hồ xe báo quãng đường 4 km, nhưng trong Vật lí độ dịch chuyển của em bằng... 0! Tại sao lại kỳ lạ vậy?',
+        core2m30s: 'Quãng đường $s$ là độ dài quỹ đạo thực tế (luôn không âm). Độ dịch chuyển $\\vec{d}$ là đại lượng vectơ nối điểm đầu đến điểm cuối (cho biết cả độ lớn và hướng). Khi chuyển động thẳng không đổi chiều thì $d = s$.',
+        challenge30s: 'Một vận động viên bơi hết 1 vòng bể bơi dài 50 m (bơi đi 50 m rồi bơi ngược về vạch xuất phát 50 m). Hãy xác định quãng đường $s$ và độ dịch chuyển $d$ của vận động viên đó!',
+        question: 'Một học sinh đi bộ từ nhà đến tiệm sách theo đường thẳng về hướng Đông $300\\text{ m}$, sau đó quay ngược lại đi về hướng Tây $100\\text{ m}$. Quãng đường $s$ và độ lớn độ dịch chuyển $d$ lần lượt là:',
+        options: [
+          '$s = 400\\text{ m};\\ d = 200\\text{ m}$',
+          '$s = 200\\text{ m};\\ d = 400\\text{ m}$',
+          '$s = 400\\text{ m};\\ d = 400\\text{ m}$',
+          '$s = 300\\text{ m};\\ d = 100\\text{ m}$'
+        ],
+        correctOption: '$s = 400\\text{ m};\\ d = 200\\text{ m}$',
+        explanation: 'Tổng quãng đường đã bước: $s = 300 + 100 = 400\\text{ m}$. Vị trí cuối cách nhà: $d = 300 - 100 = 200\\text{ m}$ về hướng Đông.'
+      },
+      {
+        id: 5,
+        code: 'bai-5',
+        chapter: 'Chương II • Động học',
+        title: 'Bài 5: Tốc độ và vận tốc',
+        url: 'https://notebooklm.link.google/7RXQ7xtIudCS',
+        hook30s: 'Khi nhìn vào đồng hồ tốc kế trên xe máy đang chỉ 40 km/h, con số đó đang cho em biết "tốc độ tức thời" hay "vận tốc trung bình"?',
+        core2m30s: 'Tốc độ trung bình $v_{\\text{tb}} = \\dfrac{s}{t}$ (vô hướng); Vận tốc trung bình $\\vec{v} = \\dfrac{\\vec{d}}{t}$ (vectơ, có hướng). Công thức cộng vận tốc: $\\vec{v}_{13} = \\vec{v}_{12} + \\vec{v}_{23}$.',
+        challenge30s: 'Nếu một chiếc thuyền chạy xuôi dòng và ngược dòng trên cùng một khúc sông, tại sao thời gian đi xuôi luôn ngắn hơn thời gian đi ngược?',
+        question: 'Đại lượng nào sau đây là đại lượng VECTƠ (vừa có độ lớn, vừa có phương và chiều chuyển động)?',
+        options: [
+          'Vận tốc ($\\vec{v} = \\dfrac{\\vec{d}}{\\Delta t}$)',
+          'Tốc độ trung bình ($v = \\dfrac{s}{t}$)',
+          'Quãng đường đi được ($s$)',
+          'Thời gian chuyển động ($t$)'
+        ],
+        correctOption: 'Vận tốc ($\\vec{v} = \\dfrac{\\vec{d}}{\\Delta t}$)',
+        explanation: 'Vận tốc được xác định bằng thương số giữa vectơ độ dịch chuyển $\\vec{d}$ và thời gian $\\Delta t$, nên là đại lượng vectơ.'
+      },
+      {
+        id: 6,
+        code: 'bai-6',
+        chapter: 'Chương II • Động học',
+        title: 'Bài 6: Thực hành đo tốc độ của vật chuyển động',
+        url: 'https://notebooklm.link.google/BFxelKqkLPVp',
+        hook30s: 'Làm sao cảnh sát giao thông bắn tốc độ xe chạy trên cao tốc chỉ trong tích tắc? Trong phòng thí nghiệm, cổng quang điện cũng làm điều tương tự đấy!',
+        core2m30s: 'Nguyên lí hoạt động của đồng hồ đo thời gian hiện số kết hợp cổng quang điện: Đo thời gian chắn sáng $\\Delta t$ của tấm cản quang để suy ra tốc độ trung bình và tốc độ tức thời.',
+        challenge30s: 'Vì sao khi đo tốc độ tức thời của xe lăn bằng cổng quang điện, người ta lại dùng tấm chắn sáng có bề rộng rất nhỏ?',
+        question: 'Trong bài thực hành đo tốc độ tức thời bằng cổng quang điện, nếu tấm chắn sáng gắn trên xe có chiều rộng $d = 0,02\\text{ m}$ đi qua cổng quang hết thời gian $\\Delta t = 0,04\\text{ s}$ thì tốc độ tức thời của xe là:',
+        options: [
+          '$0,5\\text{ m/s}$',
+          '$0,8\\text{ m/s}$',
+          '$2,0\\text{ m/s}$',
+          '$0,08\\text{ m/s}$'
+        ],
+        correctOption: '$0,5\\text{ m/s}$',
+        explanation: 'Tốc độ tức thời gần đúng bằng $v = \\dfrac{d}{\\Delta t} = \\dfrac{0,02}{0,04} = 0,5\\text{ m/s}$.'
+      },
+      {
+        id: 7,
+        code: 'bai-7',
+        chapter: 'Chương II • Động học',
+        title: 'Bài 7: Đồ thị độ dịch chuyển – thời gian',
+        url: 'https://notebooklm.link.google/JIIlerAWjc71',
+        hook30s: 'Chỉ cần nhìn vào một bức hình đồ thị $d - t$, em có thể "đọc vị" ngay ai đang chạy nhanh, ai đang đứng yên nghỉ mệt và ai đang quay đầu chạy ngược lại!',
+        core2m30s: 'Cách vẽ và đọc đồ thị $(d - t)$. Độ dốc (hệ số góc) của đường thẳng trên đồ thị $(d - t)$ chính là giá trị vận tốc $v = \\dfrac{\\Delta d}{\\Delta t}$. Đường nằm ngang ứng với vật đứng yên ($v=0$).',
+        challenge30s: 'Trên cùng một đồ thị $(d - t)$, đường biểu diễn của bạn An dốc đứng hơn đường của bạn Bình. Hỏi bạn nào đang chuyển động nhanh hơn?',
+        question: 'Trên đồ thị độ dịch chuyển – thời gian $(d - t)$ của một vật chuyển động thẳng, nếu đồ thị là một đoạn thẳng song song với trục thời gian $Ot$ thì vật đang ở trạng thái nào?',
+        options: [
+          'Đứng yên ($v = 0$)',
+          'Chuyển động thẳng đều với vận tốc lớn',
+          'Chuyển động nhanh dần đều',
+          'Đang quay đầu đổi chiều chuyển động'
+        ],
+        correctOption: 'Đứng yên ($v = 0$)',
+        explanation: 'Đoạn thẳng song song với trục $Ot$ có nghĩa là khi thời gian $t$ trôi đi, độ dịch chuyển $d$ không thay đổi $\\Rightarrow$ vật đứng yên.'
+      },
+      {
+        id: 8,
+        code: 'bai-8',
+        chapter: 'Chương II • Động học',
+        title: 'Bài 8: Chuyển động biến đổi. Gia tốc',
+        url: 'https://notebooklm.link.google/tSx65JpGfaTg',
+        hook30s: 'Siêu xe tăng tốc từ 0 lên 100 km/h chỉ trong 3 giây, còn xe đạp của em đạp mãi mới lên được 20 km/h! Đại lượng nào đo tốc độ biến thiên vận tốc cực gắt đó?',
+        core2m30s: 'Định nghĩa gia tốc $a = \\dfrac{\\Delta v}{\\Delta t} = \\dfrac{v - v_0}{t - t_0}$ (đơn vị $\\text{m/s}^2$). Khi $\\vec{a}$ cùng chiều $\\vec{v}$ ($a\\cdot v > 0$): vật tăng tốc; khi $\\vec{a}$ ngược chiều $\\vec{v}$ ($a\\cdot v < 0$): vật giảm tốc.',
+        challenge30s: 'Một chiếc xe máy đang chạy với vận tốc $10\\text{ m/s}$ thì bóp phanh và dừng hẳn sau $5\\text{ s}$. Gia tốc của xe mang dấu âm hay dương?',
+        question: 'Một ô tô đang chạy thẳng với vận tốc $v_0 = 10\\text{ m/s}$ thì tăng tốc đều, sau $5\\text{ s}$ đạt vận tốc $v = 20\\text{ m/s}$. Gia tốc của ô tô trong khoảng thời gian đó là:',
+        options: [
+          '$2\\text{ m/s}^2$',
+          '$4\\text{ m/s}^2$',
+          '$10\\text{ m/s}^2$',
+          '$-2\\text{ m/s}^2$'
+        ],
+        correctOption: '$2\\text{ m/s}^2$',
+        explanation: 'Áp dụng công thức gia tốc: $a = \\dfrac{v - v_0}{\\Delta t} = \\dfrac{20 - 10}{5} = 2\\text{ m/s}^2$.'
+      },
+      {
+        id: 9,
+        code: 'bai-9',
+        chapter: 'Chương II • Động học',
+        title: 'Bài 9: Chuyển động thẳng biến đổi đều',
+        url: 'https://notebooklm.link.google/q07Q4SNm6phx',
+        hook30s: 'Khi một tàu hỏa bắt đầu rời ga hoặc khi máy bay hạ cánh chạy trên đường băng, làm sao tính chính xác quãng đường nó trượt đi để không vượt khỏi đường băng?',
+        core2m30s: 'Bộ 3 công thức vàng của chuyển động thẳng biến đổi đều: (1) $v = v_0 + at$; (2) $d = v_0 t + \\dfrac{1}{2}at^2$; (3) Công thức độc lập thời gian $v^2 - v_0^2 = 2ad$.',
+        challenge30s: 'Khi nào em nên dùng ngay công thức độc lập thời gian $v^2 - v_0^2 = 2ad$ thay vì hai công thức còn lại?',
+        question: 'Một vật bắt đầu chuyển động nhanh dần đều từ trạng thái nghỉ ($v_0 = 0$) với gia tốc $a = 2\\text{ m/s}^2$. Độ dịch chuyển của vật sau $t = 4\\text{ s}$ là:',
+        options: [
+          '$16\\text{ m}$',
+          '$8\\text{ m}$',
+          '$32\\text{ m}$',
+          '$4\\text{ m}$'
+        ],
+        correctOption: '$16\\text{ m}$',
+        explanation: 'Ta có: $d = v_0 t + \\dfrac{1}{2}at^2 = 0 + \\dfrac{1}{2}\\times 2 \\times 4^2 = 16\\text{ m}$.'
+      },
+      {
+        id: 10,
+        code: 'bai-10',
+        chapter: 'Chương II • Động học',
+        title: 'Bài 10: Sự rơi tự do',
+        url: 'https://notebooklm.link.google/YdrN8D7lDw5G',
+        hook30s: 'Thả một chiếc lông vũ và một quả táo trong ống hút hết không khí (chân không), đố em vật nào chạm đáy trước? Câu trả lời trong video sẽ làm em bất ngờ!',
+        core2m30s: 'Sự rơi tự do là sự rơi chỉ dưới tác dụng của trọng lực. Đây là chuyển động thẳng nhanh dần đều với $v_0 = 0$, gia tốc $g \\approx 9,8\\text{ m/s}^2$: $v = gt$, $h = \\dfrac{1}{2}gt^2$, $v = \\sqrt{2gh}$.',
+        challenge30s: 'Làm sao em có thể đo được độ sâu của một cái giếng cạn chỉ bằng một hòn đá nhỏ và chiếc đồng hồ bấm giây trên điện thoại?',
+        question: 'Một vật rơi tự do từ độ cao $h$ xuống đất tại nơi có $g = 10\\text{ m/s}^2$. Nếu thời gian rơi chạm đất là $t = 3\\text{ s}$ thì độ cao $h$ ban đầu là:',
+        options: [
+          '$45\\text{ m}$',
+          '$30\\text{ m}$',
+          '$90\\text{ m}$',
+          '$15\\text{ m}$'
+        ],
+        correctOption: '$45\\text{ m}$',
+        explanation: 'Áp dụng công thức rơi tự do: $h = \\dfrac{1}{2}gt^2 = 0,5 \\times 10 \\times 3^2 = 45\\text{ m}$.'
+      },
+      {
+        id: 11,
+        code: 'bai-11',
+        chapter: 'Chương II • Động học',
+        title: 'Bài 11: Thực hành đo gia tốc rơi tự do',
+        url: 'https://notebooklm.link.google/plUQgDc7VmYY',
+        hook30s: 'Con số $g \\approx 9,8\\text{ m/s}^2$ trong sách giáo khoa từ đâu mà ra? Hôm nay chính tay các em sẽ kiểm chứng nó bằng nam châm điện và cổng quang điện!',
+        core2m30s: 'Cách bố trí thí nghiệm thả trụ thép rơi tự do qua cổng quang điện. Đo thời gian rơi $t$ ứng với các quãng đường $s$, vẽ đồ thị $(s - t^2)$ và tính $g = \\dfrac{2s}{t^2}$.',
+        challenge30s: 'Tại sao trong thí nghiệm đo $g$, người ta dùng trụ thép đặc nhỏ mà không dùng quả bóng bàn bằng nhựa nhẹ?',
+        question: 'Trong bài thực hành đo gia tốc rơi tự do, nếu biết quãng đường rơi $s$ và thời gian rơi $t$ (với vận tốc đầu $v_0 = 0$), công thức tính gia tốc rơi tự do $g$ là:',
+        options: [
+          '$g = \\dfrac{2s}{t^2}$',
+          '$g = \\dfrac{s}{2t^2}$',
+          '$g = \\dfrac{2s}{t}$',
+          '$g = 2s\\cdot t^2$'
+        ],
+        correctOption: '$g = \\dfrac{2s}{t^2}$',
+        explanation: 'Từ công thức $s = \\dfrac{1}{2}gt^2 \\Rightarrow g = \\dfrac{2s}{t^2}$.'
+      },
+      {
+        id: 12,
+        code: 'bai-12',
+        chapter: 'Chương II • Động học',
+        title: 'Bài 12: Chuyển động ném',
+        url: 'https://notebooklm.link.google/6dn29Ntkeh2h',
+        hook30s: 'Khi cầu thủ bóng rổ tung cú ném 3 điểm tuyệt đẹp hay khi máy bay thả hàng cứu trợ, quỹ đạo của vật đều tuân theo một đường cong parabol cực chuẩn!',
+        core2m30s: 'Phân tích chuyển động ném ngang và ném xiên thành 2 thành phần độc lập: Theo phương ngang $Ox$ là chuyển động thẳng đều ($x = v_0 t$); theo phương thẳng đứng $Oy$ là rơi tự do ($y = \\dfrac{1}{2}gt^2$). Tầm bay xa $L = v_0\\sqrt{\\dfrac{2h}{g}}$.',
+        challenge30s: 'Một viên đạn được bắn ngang đồng thời một viên đạn khác được thả rơi tự do từ cùng độ cao. Viên nào chạm đất trước?',
+        question: 'Trong chuyển động ném ngang từ độ cao $h$ với vận tốc đầu $v_0$ (bỏ qua sức cản không khí), thời gian bay của vật từ lúc ném đến khi chạm đất phụ thuộc vào yếu tố nào?',
+        options: [
+          'Chỉ phụ thuộc vào độ cao $h$ ban đầu ($t = \\sqrt{\\dfrac{2h}{g}}$)',
+          'Chỉ phụ thuộc vào vận tốc ném ngang $v_0$',
+          'Chỉ phụ thuộc vào khối lượng $m$ của vật',
+          'Không phụ thuộc vào cả độ cao $h$ lẫn gia tốc $g$'
+        ],
+        correctOption: 'Chỉ phụ thuộc vào độ cao $h$ ban đầu ($t = \\sqrt{\\dfrac{2h}{g}}$)',
+        explanation: 'Chuyển động theo phương thẳng đứng tương đương rơi tự do nên thời gian rơi $t = \\sqrt{\\dfrac{2h}{g}}$ chỉ phụ thuộc vào độ cao $h$ (tại nơi có $g$ xác định).'
+      },
+      {
+        id: 13,
+        code: 'bai-13',
+        chapter: 'Chương III • Động lực học',
+        title: 'Bài 13: Tổng hợp và phân tích lực. Cân bằng lực',
+        url: 'https://notebooklm.link.google/86MMpc4rb7Ca',
+        hook30s: 'Hai chiếc tàu kéo cùng kéo một con tàu chở hàng khổng lồ theo hai hướng lệch nhau, vậy con tàu lớn sẽ trôi theo hướng nào?',
+        core2m30s: 'Quy tắc hình bình hành khi tổng hợp hai lực đồng quy: $\\vec{F} = \\vec{F}_1 + \\vec{F}_2$. Điều kiện cân bằng của chất điểm: Hợp lực tác dụng lên vật bằng $\\vec{0}$ ($\\sum \\vec{F} = \\vec{0}$).',
+        challenge30s: 'Hai lực đồng quy có độ lớn $6\\text{ N}$ và $8\\text{ N}$ vuông góc với nhau thì hợp lực của chúng có độ lớn bằng bao nhiêu?',
+        question: 'Cho hai lực đồng quy $\\vec{F}_1$ và $\\vec{F}_2$ vuông góc với nhau có độ lớn lần lượt là $F_1 = 6\\text{ N}$ và $F_2 = 8\\text{ N}$. Độ lớn hợp lực $F$ của hai lực này là:',
+        options: [
+          '$10\\text{ N}$',
+          '$14\\text{ N}$',
+          '$2\\text{ N}$',
+          '$48\\text{ N}$'
+        ],
+        correctOption: '$10\\text{ N}$',
+        explanation: 'Vì $\\vec{F}_1 \\perp \\vec{F}_2$ nên $F = \\sqrt{F_1^2 + F_2^2} = \\sqrt{6^2 + 8^2} = 10\\text{ N}$.'
+      },
+      {
+        id: 14,
+        code: 'bai-14',
+        chapter: 'Chương III • Động lực học',
+        title: 'Bài 14: Định luật 1 Newton',
+        url: 'https://notebooklm.link.google/CbGzEKCKe8LF',
+        hook30s: 'Tại sao khi xe buýt đột ngột phanh gấp, tất cả hành khách trên xe lại đồng loạt chúi người về phía trước như đang... cúi chào tài xế?',
+        core2m30s: 'Nội dung Định luật 1 Newton: Nếu một vật không chịu tác dụng của lực nào hoặc chịu tác dụng của các lực có hợp lực bằng $\\vec{0}$, thì vật đang đứng yên sẽ tiếp tục đứng yên, đang chuyển động sẽ tiếp tục chuyển động thẳng đều. Khái niệm Quán tính.',
+        challenge30s: 'Vì sao khi tra đầu búa bị lỏng vào cán gỗ, người ta lại gõ mạnh đuôi cán gỗ xuống nền đất cứng?',
+        question: 'Tính chất bảo toàn trạng thái đứng yên hay chuyển động thẳng đều của vật (thể hiện qua xu hướng chống lại sự thay đổi vận tốc) được gọi là gì?',
+        options: [
+          'Quán tính',
+          'Ma sát trượt',
+          'Sự rơi tự do',
+          'Lực đẩy Archimedes'
+        ],
+        correctOption: 'Quán tính',
+        explanation: 'Quán tính là tính chất của mọi vật có xu hướng bảo toàn vận tốc cả về hướng và độ lớn.'
+      },
+      {
+        id: 15,
+        code: 'bai-15',
+        chapter: 'Chương III • Động lực học',
+        title: 'Bài 15: Định luật 2 Newton',
+        url: 'https://notebooklm.link.google/gLqldiMZLUEO',
+        hook30s: 'Cùng một lực đẩy của em, đẩy chiếc xe đẩy siêu thị lúc rỗng thì chạy vù vù, nhưng lúc chất đầy đồ ăn thì nặng trịch khó tăng tốc! Định luật 2 Newton giải thích điều đó ra sao?',
+        core2m30s: 'Gia tốc của một vật cùng hướng với lực tác dụng lên vật, tỉ lệ thuận với độ lớn của lực và tỉ lệ nghịch với khối lượng của vật: $\\vec{a} = \\dfrac{\\vec{F}}{m}$ hay $\\vec{F} = m\\vec{a}$. Khối lượng là số đo mức quán tính của vật.',
+        challenge30s: 'Một quả bóng đá và một quả tạ sắt có cùng kích thước, vật nào có mức quán tính lớn hơn? Vì sao?',
+        question: 'Một hợp lực không đổi có độ lớn $F = 12\\text{ N}$ tác dụng vào một vật có khối lượng $m = 3\\text{ kg}$. Độ lớn gia tốc $a$ mà vật thu được là:',
+        options: [
+          '$4\\text{ m/s}^2$',
+          '$36\\text{ m/s}^2$',
+          '$0,25\\text{ m/s}^2$',
+          '$9\\text{ m/s}^2$'
+        ],
+        correctOption: '$4\\text{ m/s}^2$',
+        explanation: 'Theo Định luật 2 Newton: $a = \\dfrac{F}{m} = \\dfrac{12}{3} = 4\\text{ m/s}^2$.'
+      },
+      {
+        id: 16,
+        code: 'bai-16',
+        chapter: 'Chương III • Động lực học',
+        title: 'Bài 16: Định luật 3 Newton',
+        url: 'https://notebooklm.link.google/YdJopvFYGPT7',
+        hook30s: 'Khi em tức giận đấm mạnh tay vào tường, tại sao bức tường không sao mà tay em lại... đau điếng? Hoặc làm sao tên lửa phóng lên vũ trụ được?',
+        core2m30s: 'Trong mọi trường hợp, khi vật A tác dụng lên vật B một lực thì vật B cũng tác dụng trở lại vật A một lực: $\\vec{F}_{AB} = -\\vec{F}_{BA}$. Cặp lực và phản lực cùng giá, cùng độ lớn, ngược chiều nhưng đặt vào 2 vật khác nhau (không triệt tiêu nhau).',
+        challenge30s: 'Khi con ngựa kéo chiếc xe chạy về phía trước, lực ngựa kéo xe lớn hơn hay bằng lực xe kéo ngược lại ngựa?',
+        question: 'Cặp "lực và phản lực" trong Định luật 3 Newton có đặc điểm nào sau đây?',
+        options: [
+          'Cùng giá, cùng độ lớn, ngược chiều và đặt vào hai vật khác nhau',
+          'Đặt vào cùng một vật nên luôn cân bằng và triệt tiêu nhau',
+          'Lực tác dụng xuất hiện trước, phản lực xuất hiện sau',
+          'Có độ lớn khác nhau tùy thuộc vào vật nào nặng hơn'
+        ],
+        correctOption: 'Cùng giá, cùng độ lớn, ngược chiều và đặt vào hai vật khác nhau',
+        explanation: 'Lực và phản lực luôn xuất hiện và mất đi đồng thời, cùng giá, cùng độ lớn, ngược chiều nhưng tác dụng vào hai vật khác nhau nên không cân bằng nhau.'
+      },
+      {
+        id: 17,
+        code: 'bai-17',
+        chapter: 'Chương III • Động lực học',
+        title: 'Bài 17: Trọng lực và lực căng',
+        url: 'https://notebooklm.link.google/q0ROWjSVrBxu',
+        hook30s: 'Cầu dây văng giữ cả ngàn tấn xe cộ không bị sập nhờ lực gì? Và tại sao lên Mặt Trăng em vẫn có khối lượng như cũ nhưng trọng lượng lại nhẹ bẫng?',
+        core2m30s: 'Trọng lực $\\vec{P} = m\\vec{g}$ đặt tại trọng tâm của vật, hướng thẳng đứng từ trên xuống. Lực căng dây $\\vec{T}$ xuất hiện khi dây bị kéo căng, có phương dọc theo sợi dây và chiều chống lại xu hướng kéo giãn dây.',
+        challenge30s: 'Một bóng đèn có khối lượng $m = 0,5\\text{ kg}$ được treo đứng yên trên một sợi dây nhẹ (lấy $g = 9,8\\text{ m/s}^2$). Lực căng của sợi dây bằng bao nhiêu?',
+        question: 'Một vật có khối lượng $m = 4\\text{ kg}$ đặt tại nơi có gia tốc trọng trường $g = 9,8\\text{ m/s}^2$. Trọng lượng $P$ của vật là:',
+        options: [
+          '$39,2\\text{ N}$',
+          '$4,0\\text{ N}$',
+          '$13,8\\text{ N}$',
+          '$2,45\\text{ N}$'
+        ],
+        correctOption: '$39,2\\text{ N}$',
+        explanation: 'Trọng lượng của vật: $P = m\\cdot g = 4 \\times 9,8 = 39,2\\text{ N}$.'
+      },
+      {
+        id: 18,
+        code: 'bai-18',
+        chapter: 'Chương III • Động lực học',
+        title: 'Bài 18: Lực ma sát',
+        url: 'https://notebooklm.link.google/5H9uRgIyKftO',
+        hook30s: 'Nếu một sáng thức dậy toàn bộ lực ma sát trên Trái Đất biến mất: Em không thể bước đi, không cầm nổi chiếc đũa và xe cộ không thể phanh lại!',
+        core2m30s: 'Phân biệt ma sát nghỉ, ma sát trượt và ma sát lăn. Công thức lực ma sát trượt: $F_{\\text{mst}} = \\mu \\cdot N$, hướng ngược chiều chuyển động tương đối của vật đối với bề mặt tiếp xúc.',
+        challenge30s: 'Tại sao trên lốp xe máy, ô tô và đế giày thể thao người ta luôn thiết kế rất nhiều rãnh khía sâu?',
+        question: 'Một hộp gỗ trượt trên mặt sàn nằm ngang tạo ra áp lực $N = 50\\text{ N}$ lên mặt sàn. Biết hệ số ma sát trượt giữa hộp và sàn là $\\mu = 0,3$. Độ lớn lực ma sát trượt là:',
+        options: [
+          '$15\\text{ N}$',
+          '$150\\text{ N}$',
+          '$50,3\\text{ N}$',
+          '$166,7\\text{ N}$'
+        ],
+        correctOption: '$15\\text{ N}$',
+        explanation: 'Áp dụng công thức lực ma sát trượt: $F_{\\text{mst}} = \\mu \\cdot N = 0,3 \\times 50 = 15\\text{ N}$.'
+      },
+      {
+        id: 19,
+        code: 'bai-19',
+        chapter: 'Chương III • Động lực học',
+        title: 'Bài 19: Lực cản và lực nâng',
+        url: 'https://notebooklm.link.google/2CmMCH2rrTy5',
+        hook30s: 'Tại sao vận động viên nhảy dù khi bung dù ra lại hạ cánh êm ái, và tại sao cá heo, tàu ngầm, máy bay đều có hình dáng khí động học thuôn nhọn?',
+        core2m30s: 'Lực cản của chất lưu (không khí, nước) phụ thuộc vào hình dạng vật và tốc độ chuyển động của vật. Lực đẩy Archimedes $F_A = \\rho \\cdot g \\cdot V$ hướng thẳng đứng từ dưới lên và lực nâng cánh máy bay.',
+        challenge30s: 'Cùng một tờ giấy phẳng và một tờ giấy vo tròn thành cục thả từ cùng độ cao trong không khí, tờ nào rơi nhanh hơn? Giải thích!',
+        question: 'Độ lớn của lực cản chất lưu (không khí hoặc nước) tác dụng lên một vật chuyển động sẽ thay đổi như thế nào khi vật chuyển động càng nhanh?',
+        options: [
+          'Tăng lên khi tốc độ của vật tăng',
+          'Giảm đi khi tốc độ của vật tăng',
+          'Luôn bằng $0$ với mọi tốc độ',
+          'Không phụ thuộc vào hình dạng hay tốc độ của vật'
+        ],
+        correctOption: 'Tăng lên khi tốc độ của vật tăng',
+        explanation: 'Vật chuyển động càng nhanh trong chất lưu (không khí, nước) thì độ lớn lực cản của chất lưu tác dụng lên vật càng lớn.'
+      }
+    ];
+
+    /*************************************************************************
+     * 2. TRẠNG THÁI ỨNG DỤNG (STATE) & LƯU TRỮ LOCALSTORAGE
+     *************************************************************************/
+    const STORAGE_KEY = 'VL10_VIDEO_BAI_HOC_STATE_V1';
+
+    let appState = {
+      studentName: '',
+      studentClass: '',
+      soundEnabled: true,
+      currentLessonId: 1,
+
+      // Lưu tiến độ theo từng bài (1 -> 19)
+      lessonProgress: {
+        // [lessonId]: { watched: bool, selectedAnswer: string, isCorrect: bool, reflection: string, completed: bool }
+      },
+
+      // Lưu bình luận kiểu Facebook cho từng bài và từng câu hỏi
+      comments: {
+        'lesson_1': [
+          {
+            id: 'seed_l1',
+            author: 'Nguyễn Minh Khôi',
+            className: '10A1',
+            text: 'Video tổng quan Bài 1 trên NotebookLM nghe cuốn thật sự, ví dụ về thí nghiệm tháp nghiêng Pisa rất dễ nhớ!',
+            time: '15 phút trước',
+            likes: 6,
+            ideas: 4,
+            replies: [
+              { author: 'Trần Bảo Ngọc', className: '10A1', text: 'Công nhận, nghe 3 phút là nắm hết ý chính trước khi lên lớp luôn!', time: '8 phút trước' }
+            ]
+          }
+        ],
+        'lesson_4': [
+          {
+            id: 'seed_l4',
+            author: 'Lê Gia Huy',
+            className: '10A2',
+            text: 'Ví dụ đi học 2km rồi về nhà 2km mà độ dịch chuyển bằng 0 hài hước ghê 😂 Nhờ vậy mình không bao giờ nhầm quãng đường s và độ dịch chuyển d nữa!',
+            time: '30 phút trước',
+            likes: 11,
+            ideas: 7,
+            replies: []
+          }
+        ]
+      }
+    };
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          appState.studentName = parsed.studentName || '';
+          appState.studentClass = parsed.studentClass || '';
+          appState.soundEnabled = parsed.soundEnabled !== undefined ? parsed.soundEnabled : true;
+          appState.currentLessonId = parsed.currentLessonId || 1;
+          appState.lessonProgress = parsed.lessonProgress || {};
+          if (parsed.comments) {
+            appState.comments = { ...appState.comments, ...parsed.comments };
+          }
+        }
+      } catch (e) {
+        console.warn('Lỗi đọc dữ liệu localStorage:', e);
+      }
+    }
+
+    function saveState() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
+      } catch (e) {
+        console.warn('Lỗi lưu dữ liệu localStorage:', e);
+      }
+    }
+
+    function getProgressOf(lessonId) {
+      if (!appState.lessonProgress[lessonId]) {
+        appState.lessonProgress[lessonId] = {
+          watched: false,
+          selectedAnswer: null,
+          isCorrect: false,
+          reflection: '',
+          completed: false
+        };
+      }
+      return appState.lessonProgress[lessonId];
+    }
+
+    /*************************************************************************
+     * 3. ÂM THANH TƯƠNG TÁC VUI NHỘN (WEB AUDIO API)
+     *************************************************************************/
+    let audioCtx = null;
+    function getAudioCtx() {
+      if (!audioCtx) {
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        if (AudioContextClass) audioCtx = new AudioContextClass();
+      }
+      if (audioCtx && audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      return audioCtx;
+    }
+
+    function playSuccessSound() {
+      if (!appState.soundEnabled) return;
+      const ctx = getAudioCtx();
+      if (!ctx) return;
+
+      const notes = [523.25, 659.25, 783.99, 1046.5];
+      notes.forEach((freq, idx) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(freq, ctx.currentTime + idx * 0.07);
+        gain.gain.setValueAtTime(0.001, ctx.currentTime + idx * 0.07);
+        gain.gain.exponentialRampToValueAtTime(0.2, ctx.currentTime + idx * 0.07 + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + idx * 0.07 + 0.22);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(ctx.currentTime + idx * 0.07);
+        osc.stop(ctx.currentTime + idx * 0.07 + 0.23);
+      });
+    }
+
+    function playErrorSound() {
+      if (!appState.soundEnabled) return;
+      const ctx = getAudioCtx();
+      if (!ctx) return;
+
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(290, ctx.currentTime);
+      osc.frequency.linearRampToValueAtTime(140, ctx.currentTime + 0.3);
+      gain.gain.setValueAtTime(0.16, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.32);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(ctx.currentTime);
+      osc.stop(ctx.currentTime + 0.33);
+    }
+
+    function toggleSound() {
+      appState.soundEnabled = !appState.soundEnabled;
+      saveState();
+      updateSoundUI();
+      if (appState.soundEnabled) playSuccessSound();
+    }
+
+    function updateSoundUI() {
+      const btn = document.getElementById('soundToggleBtn');
+      const icon = document.getElementById('soundIcon');
+      const text = document.getElementById('soundText');
+      if (appState.soundEnabled) {
+        icon.textContent = '🔊';
+        text.textContent = 'Âm thanh: BẬT';
+        btn.className = 'px-3.5 py-2.5 rounded-xl font-bold text-xs sm:text-sm flex items-center gap-1.5 border transition shadow-sm bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100';
+      } else {
+        icon.textContent = '🔇';
+        text.textContent = 'Âm thanh: TẮT';
+        btn.className = 'px-3.5 py-2.5 rounded-xl font-bold text-xs sm:text-sm flex items-center gap-1.5 border transition shadow-sm bg-slate-100 text-slate-600 border-slate-200 hover:bg-slate-200';
+      }
+    }
+
+    /*************************************************************************
+     * 4. KIỂM TRA BẮT BUỘC NHẬP HỌ TÊN & LỚP
+     *************************************************************************/
+    function isStudentIdentified() {
+      return appState.studentName.trim().length >= 2 && appState.studentClass.trim().length >= 2;
+    }
+
+    function saveStudentIdentity() {
+      appState.studentName = document.getElementById('studentNameInput').value;
+      appState.studentClass = document.getElementById('studentClassInput').value;
+      saveState();
+      updateIdentityUI();
+    }
+
+    function updateIdentityUI() {
+      const statusText = document.getElementById('studentStatusText');
+      const banner = document.getElementById('identityWarningBanner');
+      const box = document.getElementById('studentIdentityBox');
+      const avatar = document.getElementById('commentAvatarBox');
+
+      if (isStudentIdentified()) {
+        const cleanName = appState.studentName.trim();
+        const cleanClass = appState.studentClass.trim();
+        statusText.textContent = `👤 Học sinh: ${cleanName} • Lớp: ${cleanClass}`;
+        statusText.className = 'text-xs font-extrabold text-emerald-700';
+        banner.classList.add('hidden');
+        box.className = 'flex items-center gap-1.5 bg-emerald-50/70 border-2 border-emerald-300 rounded-xl p-1.5';
+        avatar.textContent = cleanName.charAt(0).toUpperCase();
+      } else {
+        statusText.textContent = '⚠️ Chưa nhập đầy đủ Họ tên & Lớp';
+        statusText.className = 'text-xs font-bold text-rose-600';
+        banner.classList.remove('hidden');
+        box.className = 'flex items-center gap-1.5 bg-amber-50 border-2 border-amber-400 rounded-xl p-1.5';
+        avatar.textContent = 'HS';
+      }
+    }
+
+    function requireStudentIdentity() {
+      if (!isStudentIdentified()) {
+        playErrorSound();
+        alert('⚠️ Bắt buộc: Em hãy nhập chính xác HỌ VÀ TÊN cùng LỚP ở thanh công cụ phía trên trước khi thực hiện nhé!');
+        if (!appState.studentName.trim()) {
+          document.getElementById('studentNameInput').focus();
+        } else {
+          document.getElementById('studentClassInput').focus();
+        }
+        return false;
+      }
+      return true;
+    }
+
+    /*************************************************************************
+     * 5. RENDER DANH SÁCH NÚT BẤM BÀI 1 -> BÀI 19 & LƯỚI CHỌN NHANH
+     *************************************************************************/
+    function renderLessonButtons() {
+      const searchVal = (document.getElementById('searchLessonInput')?.value || '').toLowerCase().trim();
+      const sidebarContainer = document.getElementById('lessonButtonsContainer');
+      const quickGrid = document.getElementById('quickButtonsGrid');
+
+      // Cập nhật số bài đã hoàn thành
+      const completedTotal = VIDEO_LESSONS.filter(l => getProgressOf(l.id).completed).length;
+      document.getElementById('completedCountChip').textContent = `Đã hoàn thành: ${completedTotal}/19 bài`;
+
+      // Render 19 nút chọn nhanh trên đầu trang
+      quickGrid.innerHTML = VIDEO_LESSONS.map(lesson => {
+        const prog = getProgressOf(lesson.id);
+        const isCurrent = lesson.id === appState.currentLessonId;
+        let btnClass = 'bg-slate-100 text-slate-700 hover:bg-blue-50 hover:text-blue-700 border-slate-200';
+        if (isCurrent) {
+          btnClass = 'bg-blue-600 text-white border-blue-600 shadow-sm ring-2 ring-blue-300';
+        } else if (prog.completed) {
+          btnClass = 'bg-emerald-50 text-emerald-800 border-emerald-300';
+        } else if (prog.watched) {
+          btnClass = 'bg-amber-50 text-amber-800 border-amber-300';
+        }
+
+        return `
+          <button
+            onclick="selectLesson(${lesson.id})"
+            class="lesson-btn py-2 px-1.5 rounded-xl border font-extrabold text-xs flex items-center justify-center gap-1 ${btnClass}"
+            title="${lesson.title}"
+          >
+            <span>Bài ${lesson.id}</span>
+            ${prog.completed ? '<span>✓</span>' : ''}
+          </button>
+        `;
+      }).join('');
+
+      // Render danh sách chi tiết ở cột trái
+      const filteredLessons = VIDEO_LESSONS.filter(l =>
+        l.title.toLowerCase().includes(searchVal) ||
+        l.chapter.toLowerCase().includes(searchVal) ||
+        `bài ${l.id}`.includes(searchVal)
+      );
+
+      sidebarContainer.innerHTML = filteredLessons.map(lesson => {
+        const prog = getProgressOf(lesson.id);
+        const isCurrent = lesson.id === appState.currentLessonId;
+
+        return `
+          <button
+            onclick="selectLesson(${lesson.id})"
+            class="lesson-btn w-full text-left p-3 rounded-xl border transition flex items-start gap-3 ${
+              isCurrent
+                ? 'border-blue-600 bg-blue-50/90 shadow-xs'
+                : 'border-slate-200 bg-white hover:border-blue-300'
+            }"
+          >
+            <div class="w-9 h-9 rounded-xl font-extrabold text-xs flex items-center justify-center shrink-0 ${
+              prog.completed
+                ? 'bg-emerald-600 text-white'
+                : isCurrent
+                ? 'bg-blue-600 text-white'
+                : 'bg-slate-100 text-slate-700'
+            }">
+              ${prog.completed ? '✓' : 'B' + lesson.id}
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center justify-between gap-1">
+                <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500 truncate">
+                  ${lesson.chapter}
+                </span>
+                ${
+                  prog.completed
+                    ? '<span class="text-[10px] font-extrabold text-emerald-700 bg-emerald-100 px-1.5 py-0.5 rounded">Hoàn thành</span>'
+                    : prog.watched
+                    ? '<span class="text-[10px] font-bold text-amber-700 bg-amber-100 px-1.5 py-0.5 rounded">Đã mở xem</span>'
+                    : ''
+                }
+              </div>
+              <div class="font-bold text-xs sm:text-sm text-slate-900 mt-0.5 leading-snug">
+                ${lesson.title}
+              </div>
+            </div>
+          </button>
+        `;
+      }).join('');
+    }
+
+    function selectLesson(lessonId) {
+      appState.currentLessonId = lessonId;
+      saveState();
+      renderLessonButtons();
+      renderCurrentLessonDetail();
+
+      // Đóng sidebar trên mobile sau khi chọn
+      const sidebar = document.getElementById('sidebarContainer');
+      if (window.innerWidth < 1024 && !sidebar.classList.contains('hidden')) {
+        sidebar.classList.add('hidden');
+      }
+    }
+
+    function navigateLesson(step) {
+      const nextId = appState.currentLessonId + step;
+      if (nextId >= 1 && nextId <= VIDEO_LESSONS.length) {
+        selectLesson(nextId);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }
+
+    function toggleMobileSidebar() {
+      document.getElementById('sidebarContainer').classList.toggle('hidden');
+    }
+
+    /*************************************************************************
+     * 6. RENDER CHI TIẾT BÀI HỌC, BẢNG KỊCH BẢN 4 CỘT & CÂU HỎI TƯƠNG TÁC
+     *************************************************************************/
+    function renderCurrentLessonDetail() {
+      const lesson = VIDEO_LESSONS.find(l => l.id === appState.currentLessonId) || VIDEO_LESSONS[0];
+      const prog = getProgressOf(lesson.id);
+
+      // Header bài học
+      document.getElementById('currentLessonChapterBadge').textContent = lesson.chapter;
+      document.getElementById('currentLessonTitle').textContent = lesson.title;
+      document.getElementById('videoHeroHeading').textContent = `Video Tổng Quan ${lesson.title}`;
+      document.getElementById('videoDirectUrlDisplay').textContent = `Link Video Tổng quan: ${lesson.url}`;
+
+      // Trạng thái hoàn thành
+      const statusBadge = document.getElementById('currentLessonCompletedBadge');
+      if (prog.completed) {
+        statusBadge.textContent = '✅ Đã hoàn thành Video & Phản tư';
+        statusBadge.className = 'text-xs font-extrabold px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300';
+      } else if (prog.watched) {
+        statusBadge.textContent = '👀 Đã mở Video (Chờ hoàn thành phản tư)';
+        statusBadge.className = 'text-xs font-bold px-2.5 py-1 rounded-full bg-amber-100 text-amber-800 border border-amber-300';
+      } else {
+        statusBadge.textContent = '⏳ Chưa xem hoàn tất';
+        statusBadge.className = 'text-xs font-bold px-2.5 py-1 rounded-full bg-slate-100 text-slate-600';
+      }
+
+      // Nút đánh dấu đã xem
+      const btnWatched = document.getElementById('btnMarkWatched');
+      if (prog.watched) {
+        btnWatched.textContent = '✅ Đã ghi nhận mở xem Video';
+        btnWatched.className = 'px-4 py-2.5 rounded-xl bg-emerald-500/30 text-emerald-100 font-bold text-xs sm:text-sm border border-emerald-400/40';
+      } else {
+        btnWatched.textContent = '✓ Đánh dấu em đã mở xem Video';
+        btnWatched.className = 'px-4 py-2.5 rounded-xl bg-white/15 hover:bg-white/25 text-white font-bold text-xs sm:text-sm border border-white/20 transition';
+      }
+
+      // Nút điều hướng Trước / Tiếp
+      document.getElementById('prevLessonBtn').disabled = lesson.id === 1;
+      document.getElementById('nextLessonBtn').disabled = lesson.id === VIDEO_LESSONS.length;
+      document.getElementById('prevLessonBtn').classList.toggle('opacity-40', lesson.id === 1);
+      document.getElementById('nextLessonBtn').classList.toggle('opacity-40', lesson.id === VIDEO_LESSONS.length);
+
+      // 3 Phần tiến trình bài giảng
+      document.getElementById('part1HookText').innerHTML = lesson.hook30s;
+      document.getElementById('part2CoreText').innerHTML = lesson.core2m30s;
+      document.getElementById('part3ChallengeText').innerHTML = lesson.challenge30s;
+
+      // Bảng phân cảnh 4 cột chuẩn
+      const tbody = document.getElementById('storyboardTableBody');
+      tbody.innerHTML = `
+        <tr>
+          <td class="p-3 font-bold text-amber-800 bg-amber-50/40 border-r border-slate-200">
+            Cảnh 1: Khởi động<br><span class="text-xs text-slate-500">(0:00 – 0:30)</span>
+          </td>
+          <td class="p-3 border-r border-slate-200 leading-relaxed">"${lesson.hook30s}"</td>
+          <td class="p-3 border-r border-slate-200 text-slate-600">Cảnh quay thực tế gần gũi với học sinh lớp 10 (đi xe, chơi thể thao, làm thí nghiệm vui) gây tò mò.</td>
+          <td class="p-3 font-bold text-blue-700">${lesson.title}</td>
+        </tr>
+        <tr>
+          <td class="p-3 font-bold text-blue-800 bg-blue-50/40 border-r border-slate-200">
+            Cảnh 2: Khám phá trọng tâm<br><span class="text-xs text-slate-500">(0:30 – 3:00)</span>
+          </td>
+          <td class="p-3 border-r border-slate-200 leading-relaxed">${lesson.core2m30s}</td>
+          <td class="p-3 border-r border-slate-200 text-slate-600">Mô phỏng trực quan vectơ, đồ thị chuyển động và thí nghiệm minh họa hiện tượng đời sống.</td>
+          <td class="p-3 font-bold text-indigo-700">Công thức & Định nghĩa cốt lõi</td>
+        </tr>
+        <tr>
+          <td class="p-3 font-bold text-purple-800 bg-purple-50/40 border-r border-slate-200">
+            Cảnh 3: Thử thách mở<br><span class="text-xs text-slate-500">(3:00 – 3:30)</span>
+          </td>
+          <td class="p-3 border-r border-slate-200 leading-relaxed">"${lesson.challenge30s}"</td>
+          <td class="p-3 border-r border-slate-200 text-slate-600">Tình huống thực tế mở để học sinh suy ngẫm, ghi phản tư và chuẩn bị thảo luận trên lớp.</td>
+          <td class="p-3 font-bold text-purple-700">Thử thách 30s & Phản tư</td>
+        </tr>
+      `;
+
+      // Render Câu hỏi tương tác nhanh
+      renderQuickQuestion(lesson, prog);
+
+      // Render Hộp Phản tư cuối bài
+      const reflectionEl = document.getElementById('reflectionTextarea');
+      reflectionEl.value = prog.reflection || '';
+      updateReflectionBadgeUI(prog.reflection || '');
+
+      // Render Bình luận kiểu Facebook
+      renderLessonComments();
+      renderQuestionComments();
+
+      if (window.MathJax && window.MathJax.typesetPromise) {
+        window.MathJax.typesetPromise().catch(err => console.warn(err));
+      }
+    }
+
+    function toggleStoryboardTable() {
+      document.getElementById('storyboardTableContainer').classList.toggle('hidden');
+    }
+
+    function openCurrentVideoLink() {
+      if (!requireStudentIdentity()) return;
+      const lesson = VIDEO_LESSONS.find(l => l.id === appState.currentLessonId);
+      if (!lesson) return;
+
+      const prog = getProgressOf(lesson.id);
+      prog.watched = true;
+      saveState();
+      renderLessonButtons();
+      renderCurrentLessonDetail();
+
+      window.open(lesson.url, '_blank', 'noopener,noreferrer');
+    }
+
+    function markVideoWatched() {
+      if (!requireStudentIdentity()) return;
+      const prog = getProgressOf(appState.currentLessonId);
+      prog.watched = true;
+      playSuccessSound();
+      saveState();
+      renderLessonButtons();
+      renderCurrentLessonDetail();
+    }
+
+    /*************************************************************************
+     * 7. XỬ LÝ CÂU HỎI TƯƠNG TÁC NHANH TRONG TỪNG VIDEO
+     *************************************************************************/
+    function renderQuickQuestion(lesson, prog) {
+      document.getElementById('quickQuestionText').innerHTML = lesson.question;
+      const optionsContainer = document.getElementById('quickQuestionOptions');
+      const expBox = document.getElementById('quickQuestionExplanation');
+      const statusBadge = document.getElementById('quickQuizStatusBadge');
+
+      const labels = ['A', 'B', 'C', 'D'];
+      const hasAnswered = prog.selectedAnswer !== null && prog.selectedAnswer !== undefined;
+
+      if (!hasAnswered) {
+        statusBadge.textContent = 'Chưa trả lời';
+        statusBadge.className = 'text-xs font-bold px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700';
+        expBox.classList.add('hidden');
+      } else if (prog.isCorrect) {
+        statusBadge.textContent = '🎉 Đã trả lời ĐÚNG';
+        statusBadge.className = 'text-xs font-extrabold px-2.5 py-1 rounded-lg bg-emerald-100 text-emerald-800';
+        expBox.classList.remove('hidden');
+        expBox.className = 'p-4 rounded-xl border bg-emerald-50 border-emerald-200 text-emerald-950 text-sm animate-pop';
+        expBox.innerHTML = `<b>🎉 Chính xác!</b> ${lesson.explanation}`;
+      } else {
+        statusBadge.textContent = '💡 Đã chọn (Xem giải thích)';
+        statusBadge.className = 'text-xs font-extrabold px-2.5 py-1 rounded-lg bg-rose-100 text-rose-800';
+        expBox.classList.remove('hidden');
+        expBox.className = 'p-4 rounded-xl border bg-rose-50 border-rose-200 text-rose-950 text-sm animate-pop';
+        expBox.innerHTML = `<b>💡 Chưa chính xác!</b> Đáp án đúng là: <b>${lesson.correctOption}</b>.<br><b>Giải thích:</b> ${lesson.explanation}`;
+      }
+
+      optionsContainer.innerHTML = lesson.options.map((opt, idx) => {
+        let style = 'bg-white border-slate-200 hover:border-blue-400 text-slate-800';
+        let badge = 'bg-slate-100 text-slate-700';
+
+        if (hasAnswered) {
+          const isThisCorrect = opt === lesson.correctOption;
+          const isThisChosen = opt === prog.selectedAnswer;
+          if (isThisCorrect) {
+            style = 'bg-emerald-50 border-emerald-500 text-emerald-950 font-semibold';
+            badge = 'bg-emerald-600 text-white';
+          } else if (isThisChosen && !isThisCorrect) {
+            style = 'bg-rose-50 border-rose-500 text-rose-950 font-semibold';
+            badge = 'bg-rose-600 text-white';
+          } else {
+            style = 'bg-slate-50 border-slate-200 text-slate-400 opacity-75';
+          }
+        }
+
+        const safeOpt = opt.replace(/'/g, "\\'");
+        return `
+          <button
+            onclick="selectQuickAnswer('${safeOpt}')"
+            class="w-full text-left p-3.5 rounded-xl border-2 transition flex items-center gap-3 ${style}"
+          >
+            <span class="w-8 h-8 rounded-lg font-extrabold text-xs sm:text-sm flex items-center justify-center shrink-0 ${badge}">
+              ${labels[idx]}
+            </span>
+            <span class="text-sm sm:text-base flex-1">${opt}</span>
+          </button>
+        `;
+      }).join('');
+    }
+
+    function selectQuickAnswer(chosenOption) {
+      if (!requireStudentIdentity()) return;
+      const lesson = VIDEO_LESSONS.find(l => l.id === appState.currentLessonId);
+      if (!lesson) return;
+
+      const prog = getProgressOf(lesson.id);
+      prog.selectedAnswer = chosenOption;
+      prog.isCorrect = chosenOption === lesson.correctOption;
+
+      if (prog.isCorrect) {
+        playSuccessSound();
+      } else {
+        playErrorSound();
+      }
+
+      saveState();
+      renderCurrentLessonDetail();
+    }
+
+    /*************************************************************************
+     * 8. XỬ LÝ PHẢN TƯ CUỐI VIDEO (BẮT BUỘC TRƯỚC KHI HOÀN THÀNH)
+     *************************************************************************/
+    function handleReflectionInput() {
+      const val = document.getElementById('reflectionTextarea').value;
+      const prog = getProgressOf(appState.currentLessonId);
+      prog.reflection = val;
+      saveState();
+      updateReflectionBadgeUI(val);
+    }
+
+    function updateReflectionBadgeUI(text) {
+      const badge = document.getElementById('reflectionStatusBadge');
+      if (text && text.trim().length >= 8) {
+        badge.textContent = '✓ Đã ghi nội dung phản tư';
+        badge.className = 'text-xs font-extrabold text-emerald-700';
+      } else {
+        badge.textContent = '* Bắt buộc ghi trước khi bấm Hoàn thành';
+        badge.className = 'text-xs font-bold text-rose-600';
+      }
+    }
+
+    function completeCurrentLesson() {
+      if (!requireStudentIdentity()) return;
+
+      const lesson = VIDEO_LESSONS.find(l => l.id === appState.currentLessonId);
+      const prog = getProgressOf(lesson.id);
+      const reflectionText = (prog.reflection || '').trim();
+
+      if (reflectionText.length < 8) {
+        playErrorSound();
+        alert('⚠️ Bắt buộc Phản tư cuối bài:\n\nEm hãy ghi lại câu trả lời cho câu hỏi:\n"Hãy lọc ra điều em thấy khó hiểu nhất sau khi XEM xong video này là gì?" (tối thiểu 8 ký tự) trước khi bấm nút Hoàn thành nhé!');
+        document.getElementById('reflectionTextarea').focus();
+        return;
+      }
+
+      prog.watched = true;
+      prog.completed = true;
+      saveState();
+      playSuccessSound();
+      renderLessonButtons();
+      renderCurrentLessonDetail();
+      openReportModal();
+    }
+
+    function shareReflectionToComments() {
+      if (!requireStudentIdentity()) return;
+      const prog = getProgressOf(appState.currentLessonId);
+      const reflectionText = (prog.reflection || '').trim();
+      if (reflectionText.length < 5) {
+        playErrorSound();
+        alert('Em hãy nhập điều em thấy khó hiểu vào ô Phản tư trước khi chia sẻ xuống khu thảo luận nhé!');
+        document.getElementById('reflectionTextarea').focus();
+        return;
+      }
+
+      const threadKey = `lesson_${appState.currentLessonId}`;
+      if (!appState.comments[threadKey]) appState.comments[threadKey] = [];
+      appState.comments[threadKey].unshift({
+        id: 'ref_' + Date.now(),
+        author: appState.studentName.trim(),
+        className: appState.studentClass.trim(),
+        text: `🤔 [Góc Phản Tư sau khi xem Video]: "${reflectionText}" — Các bạn cùng lớp giải đáp giúp mình với nhé!`,
+        time: 'Vừa xong',
+        likes: 1,
+        ideas: 1,
+        replies: []
+      });
+
+      saveState();
+      playSuccessSound();
+      renderLessonComments();
+    }
+
+    /*************************************************************************
+     * 9. HỆ THỐNG BÌNH LUẬN KIỂU FACEBOOK (CHO BÀI HỌC & CÂU HỎI)
+     *************************************************************************/
+    function escapeHtml(str) {
+      return String(str || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    function renderThreadHTML(threadKey, list) {
+      if (!list || list.length === 0) {
+        return `<div class="text-xs text-slate-500 italic py-2">Chưa có bình luận nào. Em hãy mở đầu cuộc thảo luận cho bài học này nhé!</div>`;
+      }
+
+      return list.map(c => {
+        const repliesHtml = (c.replies || []).map(r => `
+          <div class="ml-7 mt-2 bg-slate-50 p-2.5 rounded-xl border border-slate-200 text-xs">
+            <div class="flex items-center gap-1.5">
+              <span class="font-extrabold text-slate-900">${escapeHtml(r.author)}</span>
+              <span class="px-1.5 py-0.5 rounded bg-blue-50 text-blue-700 font-bold text-[10px]">Lớp ${escapeHtml(r.className)}</span>
+              <span class="text-slate-400 text-[11px] ml-auto">${r.time}</span>
+            </div>
+            <p class="text-slate-700 mt-1">${escapeHtml(r.text)}</p>
+          </div>
+        `).join('');
+
+        return `
+          <div class="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-2xs text-xs sm:text-sm">
+            <div class="flex items-center justify-between gap-2">
+              <div class="flex items-center gap-2">
+                <div class="w-8 h-8 rounded-full bg-blue-100 text-blue-700 font-extrabold text-xs flex items-center justify-center">
+                  ${escapeHtml(c.author.charAt(0).toUpperCase())}
+                </div>
+                <div>
+                  <span class="font-extrabold text-slate-900">${escapeHtml(c.author)}</span>
+                  <span class="ml-1.5 px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 font-bold text-[11px] border border-indigo-100">
+                    Lớp ${escapeHtml(c.className)}
+                  </span>
+                </div>
+              </div>
+              <span class="text-[11px] text-slate-400">${c.time}</span>
+            </div>
+
+            <p class="text-slate-800 mt-2 pl-10 leading-relaxed">${escapeHtml(c.text)}</p>
+
+            <!-- Thanh tương tác Like / Góc nhìn hay / Reply kiểu Facebook -->
+            <div class="flex flex-wrap items-center gap-4 mt-2.5 pl-10 text-xs font-bold text-slate-500">
+              <button onclick="reactComment('${threadKey}', '${c.id}', 'likes')" class="hover:text-blue-600 flex items-center gap-1">
+                <span>👍 Đồng cảm</span>
+                <span class="text-blue-600">(${c.likes || 0})</span>
+              </button>
+              <button onclick="reactComment('${threadKey}', '${c.id}', 'ideas')" class="hover:text-amber-600 flex items-center gap-1">
+                <span>💡 Góc nhìn hay</span>
+                <span class="text-amber-600">(${c.ideas || 0})</span>
+              </button>
+              <button onclick="toggleReplyInput('${threadKey}', '${c.id}')" class="hover:text-indigo-600">
+                ↩️ Trả lời
+              </button>
+            </div>
+
+            ${repliesHtml}
+
+            <!-- Ô nhập phản hồi -->
+            <div id="replyBox_${threadKey}_${c.id}" class="hidden ml-7 mt-2.5 flex gap-2">
+              <input
+                id="replyInput_${threadKey}_${c.id}"
+                type="text"
+                placeholder="Viết phản hồi của em..."
+                onkeydown="if(event.key==='Enter') submitReply('${threadKey}', '${c.id}')"
+                class="flex-1 px-3 py-1.5 rounded-xl border border-slate-300 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+              <button
+                onclick="submitReply('${threadKey}', '${c.id}')"
+                class="px-3.5 py-1.5 rounded-xl bg-slate-800 text-white font-bold text-xs"
+              >
+                Gửi
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderLessonComments() {
+      const threadKey = `lesson_${appState.currentLessonId}`;
+      const list = appState.comments[threadKey] || [];
+      document.getElementById('lessonCommentTotalBadge').textContent = `${list.length} bình luận`;
+      document.getElementById('lessonCommentsContainer').innerHTML = renderThreadHTML(threadKey, list);
+    }
+
+    function renderQuestionComments() {
+      const threadKey = `question_${appState.currentLessonId}`;
+      const list = appState.comments[threadKey] || [];
+      document.getElementById('questionCommentCountText').textContent = `(${list.length})`;
+      document.getElementById('questionCommentsList').innerHTML = renderThreadHTML(threadKey, list);
+    }
+
+    function toggleQuestionComments() {
+      document.getElementById('questionCommentsBox').classList.toggle('hidden');
+    }
+
+    function postCommentForCurrentLesson() {
+      if (!requireStudentIdentity()) return;
+      const inputEl = document.getElementById('lessonCommentInput');
+      const text = inputEl.value.trim();
+      if (!text) return;
+
+      const threadKey = `lesson_${appState.currentLessonId}`;
+      if (!appState.comments[threadKey]) appState.comments[threadKey] = [];
+      appState.comments[threadKey].unshift({
+        id: 'c_' + Date.now(),
+        author: appState.studentName.trim(),
+        className: appState.studentClass.trim(),
+        text,
+        time: 'Vừa xong',
+        likes: 0,
+        ideas: 0,
+        replies: []
+      });
+
+      inputEl.value = '';
+      saveState();
+      playSuccessSound();
+      renderLessonComments();
+    }
+
+    function postCommentForCurrentQuestion() {
+      if (!requireStudentIdentity()) return;
+      const inputEl = document.getElementById('questionCommentInput');
+      const text = inputEl.value.trim();
+      if (!text) return;
+
+      const threadKey = `question_${appState.currentLessonId}`;
+      if (!appState.comments[threadKey]) appState.comments[threadKey] = [];
+      appState.comments[threadKey].push({
+        id: 'qc_' + Date.now(),
+        author: appState.studentName.trim(),
+        className: appState.studentClass.trim(),
+        text,
+        time: 'Vừa xong',
+        likes: 0,
+        ideas: 0,
+        replies: []
+      });
+
+      inputEl.value = '';
+      saveState();
+      playSuccessSound();
+      renderQuestionComments();
+    }
+
+    function reactComment(threadKey, commentId, field) {
+      if (!requireStudentIdentity()) return;
+      const list = appState.comments[threadKey] || [];
+      const item = list.find(c => c.id === commentId);
+      if (item) {
+        item[field] = (item[field] || 0) + 1;
+        saveState();
+        renderLessonComments();
+        renderQuestionComments();
+      }
+    }
+
+    function toggleReplyInput(threadKey, commentId) {
+      const box = document.getElementById(`replyBox_${threadKey}_${commentId}`);
+      if (box) box.classList.toggle('hidden');
+    }
+
+    function submitReply(threadKey, commentId) {
+      if (!requireStudentIdentity()) return;
+      const input = document.getElementById(`replyInput_${threadKey}_${commentId}`);
+      if (!input) return;
+      const text = input.value.trim();
+      if (!text) return;
+
+      const list = appState.comments[threadKey] || [];
+      const item = list.find(c => c.id === commentId);
+      if (item) {
+        if (!item.replies) item.replies = [];
+        item.replies.push({
+          author: appState.studentName.trim(),
+          className: appState.studentClass.trim(),
+          text,
+          time: 'Vừa xong'
+        });
+        saveState();
+        renderLessonComments();
+        renderQuestionComments();
+      }
+    }
+
+    /*************************************************************************
+     * 10. BÁO HỌ TÊN & KẾT QUẢ THỰC HIỆN (SAO CHÉP NỘP QUA ZALO)
+     *************************************************************************/
+    function openReportModal() {
+      if (!requireStudentIdentity()) return;
+
+      const currentLesson = VIDEO_LESSONS.find(l => l.id === appState.currentLessonId);
+      const currentProg = getProgressOf(currentLesson.id);
+      const completedLessons = VIDEO_LESSONS.filter(l => getProgressOf(l.id).completed);
+
+      const warningBox = document.getElementById('reportWarningUnfinished');
+      if (!currentProg.reflection || currentProg.reflection.trim().length < 8) {
+        warningBox.classList.remove('hidden');
+      } else {
+        warningBox.classList.add('hidden');
+      }
+
+      const reportLines = [
+        `🎬 BÁO CÁO KẾT QUẢ TỰ HỌC: VIDEO BÀI HỌC VẬT LÍ 10`,
+        `👤 Học sinh: ${appState.studentName.trim()} — Lớp: ${appState.studentClass.trim()}`,
+        `📌 Bài đang học: ${currentLesson.title}`,
+        `• Trạng thái xem Video: ${currentProg.watched ? 'Đã mở xem Video' : 'Chưa mở Video'}`,
+        `• Câu hỏi tương tác: ${currentProg.selectedAnswer ? (currentProg.isCorrect ? 'Trả lời ĐÚNG' : 'Đã làm (cần xem lại)') : 'Chưa làm'}`,
+        `• Phản tư điều khó hiểu nhất: "${(currentProg.reflection || 'Chưa ghi phản tư').trim()}"`,
+        `----------------------------------------`,
+        `📊 Tổng số Video bài học đã hoàn thành: ${completedLessons.length} / 19 bài`,
+        completedLessons.length > 0
+          ? `Danh sách bài đã hoàn thành: ${completedLessons.map(l => 'Bài ' + l.id).join(', ')}`
+          : ''
+      ].filter(Boolean).join('\n');
+
+      document.getElementById('reportContentBox').textContent = reportLines;
+      const modal = document.getElementById('reportModal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeReportModal() {
+      const modal = document.getElementById('reportModal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    function copyReportText() {
+      const text = document.getElementById('reportContentBox').textContent;
+      navigator.clipboard.writeText(text).then(() => {
+        playSuccessSound();
+        const btn = document.getElementById('copyReportBtn');
+        btn.innerHTML = '<span>✅</span><span>Đã sao chép! Em hãy dán gửi Zalo cho GV</span>';
+        setTimeout(() => {
+          btn.innerHTML = '<span>📋</span><span>Sao chép Báo cáo nộp Zalo / Giáo viên</span>';
+        }, 3000);
+      }).catch(() => {
+        alert('Đã tạo nội dung báo cáo. Em hãy bôi đen và sao chép đoạn văn bản trên hộp thoại nhé!');
+      });
+    }
+
+    /*************************************************************************
+     * 11. KHỞI CHẠY ỨNG DỤNG KHI TẢI TRANG
+     *************************************************************************/
+    window.addEventListener('DOMContentLoaded', () => {
+      loadState();
+      document.getElementById('studentNameInput').value = appState.studentName;
+      document.getElementById('studentClassInput').value = appState.studentClass;
+      updateIdentityUI();
+      updateSoundUI();
+      renderLessonButtons();
+      renderCurrentLessonDetail();
+    });
+  </script>
+</body>
+</html>
